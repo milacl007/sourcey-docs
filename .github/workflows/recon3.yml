@@ -1,0 +1,21 @@
+name: runx-recon3
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/recon3.yml']
+jobs:
+  r:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install + explore skill/receipt format
+        run: |
+          curl -fsSL https://runx.ai/install | sh; export PATH=/usr/local/bin:$PATH
+          runx init -g --prefetch official >/dev/null 2>&1 || true
+          echo "===== official-skills tree ====="; find $HOME/.runx/official-skills -maxdepth 3 -type d | head -40
+          F=$(find $HOME/.runx/official-skills -name SKILL.md | head -1); echo "SAMPLE SKILL.md: $F"
+          echo "----- SKILL.md -----"; sed -n '1,90p' "$F"
+          D=$(dirname "$F"); echo "----- skill dir files -----"; ls -la "$D"
+          echo "===== hosted search: sourcey ====="; runx registry search sourcey --json 2>&1 | head -30 || true
+          echo "===== hosted search: docs ====="; runx registry search docs --json 2>&1 | head -20 || true
+          echo "===== run official skill -> receipt ====="; runx skill "$F" -R ./rcpts -j 2>&1 | tail -25 || true
+          echo "===== receipts ====="; find ./rcpts -type f 2>/dev/null | head; echo "--- verify ---"; runx verify --receipt-dir ./rcpts --allow-local-development-signatures -j 2>&1 | head -30 || true
