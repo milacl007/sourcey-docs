@@ -1,0 +1,40 @@
+name: build-docs
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: fetch pinned OpenAPI (Ory Kratos v26.2.0)
+        run: |
+          mkdir -p work && cd work
+          curl -fsSL "https://raw.githubusercontent.com/ory/kratos/v26.2.0/spec/api.json" -o api.json
+          python3 -c "import json;d=json.load(open('api.json'));print('title:',d['info']['title'],'paths:',len(d['paths']))"
+      - name: install + build sourcey
+        run: |
+          cd work
+          npm init -y >/dev/null 2>&1
+          npm install sourcey 2>&1 | tail -4
+          echo "--- sourcey build ---"
+          npx --yes sourcey build api.json 2>&1 | tail -40 || true
+          echo "--- outputs ---"; ls -la; echo "--- dist ---"; ls -la dist 2>&1 | head || true
+      - name: upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: work/dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
