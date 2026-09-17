@@ -1,0 +1,25 @@
+name: runx-recon2
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/recon2.yml']
+jobs:
+  r:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install runx
+        run: |
+          curl -fsSL https://runx.ai/install | sh
+          echo /usr/local/bin >> $GITHUB_PATH
+      - name: explore receipts
+        run: |
+          runx --version
+          echo "===== FULL HELP ====="; runx --help 2>&1 || true
+          echo "===== init ====="; runx init -g --prefetch official 2>&1 | tail -25 || true
+          echo "===== list skills ====="; runx list skills 2>&1 | head -30 || true
+          echo "===== new --help ====="; runx new --help 2>&1 | head -35 || true
+          echo "===== verify --help ====="; runx verify --help 2>&1 | head -25 || true
+          echo "===== harness --help ====="; runx harness --help 2>&1 | head -25 || true
+          echo "===== try harness hello-world ====="; runx harness examples/hello-world 2>&1 | tail -25 || true
+          echo "===== history json ====="; runx history --json 2>&1 | head -30 || true
+          echo "===== receipt files ====="; find $HOME -iname '*receipt*' 2>/dev/null | head; find $HOME -path '*runx*' -name '*.json' 2>/dev/null | head
