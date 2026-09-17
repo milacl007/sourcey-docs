@@ -1,0 +1,25 @@
+name: runx-recon4
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/recon4.yml']
+jobs:
+  r:
+    runs-on: ubuntu-latest
+    steps:
+      - name: explore + try authoring a receipt-producing skill
+        shell: bash
+        run: |
+          set +e
+          curl -fsSL https://runx.ai/install | sh; export PATH=/usr/local/bin:$PATH
+          runx init -g --prefetch official >/dev/null 2>&1
+          echo "===== ALL files under official-skills ====="; find $HOME/.runx/official-skills -type f 2>/dev/null | head -30
+          echo "===== registry search (hosted) sourcey/docs ====="
+          runx registry search sourcey --json 2>&1 | head -15
+          runx registry search openapi --json 2>&1 | head -15
+          echo "===== author minimal skill + inspect (schema errors reveal format) ====="
+          mkdir -p mini
+          printf -- '---\nname: docs-validation\nversion: 0.0.1\ndescription: Validate generated docs\n---\n# Docs Validation\nConfirms artifact.\n' > mini/SKILL.md
+          echo "--- inspect ---"; runx skill inspect ./mini/SKILL.md -j 2>&1 | head -40
+          echo "--- run ---"; runx skill ./mini/SKILL.md -R ./rcpts -j 2>&1 | head -40
+          echo "--- receipts dir ---"; find ./rcpts -type f 2>/dev/null
