@@ -1,0 +1,21 @@
+{
+  "artifact": "sourcey-docs-evidence.v1",
+  "public_url": "https://milacl007.github.io/sourcey-docs/",
+  "target": {
+    "repo": "ory/kratos",
+    "ref": "v26.2.0",
+    "commit": "9d7085948039ffb8960160d4979f71527b5cf4d5",
+    "license": "Apache-2.0",
+    "spec_path": "spec/api.json"
+  },
+  "observations": {
+    "runx_version": "runx-cli 0.9.1",
+    "operations": 56,
+    "schemas": 155,
+    "generator": "sourcey (npm) static site generator",
+    "receipt_id": null,
+    "receipt_digest": null,
+    "receipt_class": null,
+    "reproduce": "runx skill ./skill -R ./receipts ; runx verify --receipt-dir ./receipts"
+  }
+}

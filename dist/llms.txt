@@ -1,0 +1,63 @@
+# Ory Identities API
+
+> This is the API specification for Ory Identities with features such as registration, login, recovery, account verification, profile settings, password reset, identity management, session management, email and sms delivery, and more.
+
+## API Reference
+
+- [Ory Identities API](/api.html): This is the API specification for Ory Identities with features such as registration, login, recovery, account verification, profile settings, password reset, identity management, session management, email and sms delivery, and more.
+- [Get WebAuthn JavaScript](/api.html#operation-well-known-ory-webauthn-js-get): GET /.well-known/ory/webauthn.js - This endpoint provides JavaScript which is needed in order to perform WebAuthn login and registration.
+- [List Messages](/api.html#operation-admin-courier-messages-get): GET /admin/courier/messages - Lists all messages by given status and recipient.
+- [Get a Message](/api.html#operation-admin-courier-messages-id-get): GET /admin/courier/messages/{id} - Gets a specific messages by the given ID.
+- [List Identities](/api.html#operation-admin-identities-get): GET /admin/identities - Lists all [identities](https://www.ory.sh/docs/kratos/concepts/identity-user-model) in the system. Note: filters cannot be combined.
+- [Create an Identity](/api.html#operation-admin-identities-post): POST /admin/identities - Create an [identity](https://www.ory.sh/docs/kratos/concepts/identity-user-model).  This endpoint can also be used to
+- [Create multiple identities](/api.html#operation-admin-identities-patch): PATCH /admin/identities - Creates multiple [identities](https://www.ory.com/docs/kratos/concepts/identity-user-model).
+- [Get an Identity by its External ID](/api.html#operation-admin-identities-by-external-externalid-get): GET /admin/identities/by/external/{externalID} - Return an [identity](https://www.ory.sh/docs/kratos/concepts/identity-user-model) by its external ID. You can optionally
+- [Get an Identity](/api.html#operation-admin-identities-id-get): GET /admin/identities/{id} - Return an [identity](https://www.ory.sh/docs/kratos/concepts/identity-user-model) by its ID. You can optionally
+- [Update an Identity](/api.html#operation-admin-identities-id-put): PUT /admin/identities/{id} - This endpoint updates an [identity](https://www.ory.sh/docs/kratos/concepts/identity-user-model). The full identity
+- [Delete an Identity](/api.html#operation-admin-identities-id-delete): DELETE /admin/identities/{id} - Calling this endpoint irrecoverably and permanently deletes the [identity](https://www.ory.sh/docs/kratos/concepts/identity-user-model) given its ID. This action can not be undone.
+- [Patch an Identity](/api.html#operation-admin-identities-id-patch): PATCH /admin/identities/{id} - Partially updates an [identity's](https://www.ory.sh/docs/kratos/concepts/identity-user-model) field using [JSON Patch](https://jsonpatch.com/).
+- [Delete a credential for a specific identity](/api.html#operation-admin-identities-id-credentials-type-delete): DELETE /admin/identities/{id}/credentials/{type} - Delete an [identity](https://www.ory.sh/docs/kratos/concepts/identity-user-model) credential by its type.
+- [List an Identity's Sessions](/api.html#operation-admin-identities-id-sessions-get): GET /admin/identities/{id}/sessions - This endpoint returns all sessions that belong to the given Identity.
+- [Delete & Invalidate an Identity's Sessions](/api.html#operation-admin-identities-id-sessions-delete): DELETE /admin/identities/{id}/sessions - Calling this endpoint irrecoverably and permanently deletes and invalidates all sessions that belong to the given Identity.
+- [Create a Recovery Code](/api.html#operation-admin-recovery-code-post): POST /admin/recovery/code - This endpoint creates a recovery code which should be given to the user in order for them to recover
+- [Create a Recovery Link](/api.html#operation-admin-recovery-link-post): POST /admin/recovery/link - This endpoint creates a recovery link which should be given to the user in order for them to recover
+- [List All Sessions](/api.html#operation-admin-sessions-get): GET /admin/sessions - Listing all sessions that exist.
+- [Get Session](/api.html#operation-admin-sessions-id-get): GET /admin/sessions/{id} - This endpoint is useful for:
+- [Deactivate a Session](/api.html#operation-admin-sessions-id-delete): DELETE /admin/sessions/{id} - Calling this endpoint deactivates the specified session. Session data is not deleted.
+- [Extend a Session](/api.html#operation-admin-sessions-id-extend-patch): PATCH /admin/sessions/{id}/extend - Calling this endpoint extends the given session ID. If `session.earliest_possible_extend` is set it
+- [Check HTTP Server Status](/api.html#operation-health-alive-get): GET /health/alive - This endpoint returns a HTTP 200 status code when Ory Kratos is accepting incoming
+- [Check HTTP Server and Database Status](/api.html#operation-health-ready-get): GET /health/ready - This endpoint returns a HTTP 200 status code when Ory Kratos is up running and the environment dependencies (e.g.
+- [Get all Identity Schemas](/api.html#operation-schemas-get): GET /schemas - Returns a list of all identity schemas currently in use.
+- [Get Identity JSON Schema](/api.html#operation-schemas-id-get): GET /schemas/{id} - Return a specific identity schema.
+- [Get User-Flow Errors](/api.html#operation-self-service-errors-get): GET /self-service/errors - This endpoint returns the error associated with a user-facing self service errors.
+- [Get FedCM Parameters](/api.html#operation-self-service-fed-cm-parameters-get): GET /self-service/fed-cm/parameters - This endpoint returns a list of all available FedCM providers. It is only supported on the Ory Network.
+- [Submit a FedCM token](/api.html#operation-self-service-fed-cm-token-post): POST /self-service/fed-cm/token - Use this endpoint to submit a token from a FedCM provider through
+- [Submit a Login Flow](/api.html#operation-self-service-login-post): POST /self-service/login - Use this endpoint to complete a login flow. This endpoint
+- [Create Login Flow for Native Apps](/api.html#operation-self-service-login-api-get): GET /self-service/login/api - This endpoint initiates a login flow for native apps that do not use a browser, such as mobile devices, smart TVs, and so on.
+- [Create Login Flow for Browsers](/api.html#operation-self-service-login-browser-get): GET /self-service/login/browser - This endpoint initializes a browser-based user login flow. This endpoint will set the appropriate
+- [Get Login Flow](/api.html#operation-self-service-login-flows-get): GET /self-service/login/flows - This endpoint returns a login flow's context with, for example, error details and other information.
+- [Update Logout Flow](/api.html#operation-self-service-logout-get): GET /self-service/logout - This endpoint logs out an identity in a self-service manner.
+- [Perform Logout for Native Apps](/api.html#operation-self-service-logout-api-delete): DELETE /self-service/logout/api - Use this endpoint to log out an identity using an Ory Session Token. If the Ory Session Token was successfully
+- [Create a Logout URL for Browsers](/api.html#operation-self-service-logout-browser-get): GET /self-service/logout/browser - This endpoint initializes a browser-based user logout flow and a URL which can be used to log out the user.
+- [Update Recovery Flow](/api.html#operation-self-service-recovery-post): POST /self-service/recovery - Use this endpoint to update a recovery flow. This endpoint
+- [Create Recovery Flow for Native Apps](/api.html#operation-self-service-recovery-api-get): GET /self-service/recovery/api - This endpoint initiates a recovery flow for API clients such as mobile devices, smart TVs, and so on.
+- [Create Recovery Flow for Browsers](/api.html#operation-self-service-recovery-browser-get): GET /self-service/recovery/browser - This endpoint initializes a browser-based account recovery flow. Once initialized, the browser will be redirected to
+- [Get Recovery Flow](/api.html#operation-self-service-recovery-flows-get): GET /self-service/recovery/flows - This endpoint returns a recovery flow's context with, for example, error details and other information.
+- [Update Registration Flow](/api.html#operation-self-service-registration-post): POST /self-service/registration - Use this endpoint to complete a registration flow by sending an identity's traits and password. This endpoint
+- [Create Registration Flow for Native Apps](/api.html#operation-self-service-registration-api-get): GET /self-service/registration/api - This endpoint initiates a registration flow for API clients such as mobile devices, smart TVs, and so on.
+- [Create Registration Flow for Browsers](/api.html#operation-self-service-registration-browser-get): GET /self-service/registration/browser - This endpoint initializes a browser-based user registration flow. This endpoint will set the appropriate
+- [Get Registration Flow](/api.html#operation-self-service-registration-flows-get): GET /self-service/registration/flows - This endpoint returns a registration flow's context with, for example, error details and other information.
+- [Complete Settings Flow](/api.html#operation-self-service-settings-post): POST /self-service/settings - Use this endpoint to complete a settings flow by sending an identity's updated password. This endpoint
+- [Create Settings Flow for Native Apps](/api.html#operation-self-service-settings-api-get): GET /self-service/settings/api - This endpoint initiates a settings flow for API clients such as mobile devices, smart TVs, and so on.
+- [Create Settings Flow for Browsers](/api.html#operation-self-service-settings-browser-get): GET /self-service/settings/browser - This endpoint initializes a browser-based user settings flow. Once initialized, the browser will be redirected to
+- [Get Settings Flow](/api.html#operation-self-service-settings-flows-get): GET /self-service/settings/flows - When accessing this endpoint through Ory Kratos' Public API you must ensure that either the Ory Kratos Session Cookie
+- [Complete Verification Flow](/api.html#operation-self-service-verification-post): POST /self-service/verification - Use this endpoint to complete a verification flow. This endpoint
+- [Create Verification Flow for Native Apps](/api.html#operation-self-service-verification-api-get): GET /self-service/verification/api - This endpoint initiates a verification flow for API clients such as mobile devices, smart TVs, and so on.
+- [Create Verification Flow for Browser Clients](/api.html#operation-self-service-verification-browser-get): GET /self-service/verification/browser - This endpoint initializes a browser-based account verification flow. Once initialized, the browser will be redirected to
+- [Get Verification Flow](/api.html#operation-self-service-verification-flows-get): GET /self-service/verification/flows - This endpoint returns a verification flow's context with, for example, error details and other information.
+- [Get My Active Sessions](/api.html#operation-sessions-get): GET /sessions - This endpoints returns all other active sessions that belong to the logged-in user.
+- [Disable my other sessions](/api.html#operation-sessions-delete): DELETE /sessions - Calling this endpoint invalidates all except the current session that belong to the logged-in user.
+- [Exchange Session Token](/api.html#operation-sessions-token-exchange-get): GET /sessions/token-exchange
+- [Check Who the Current HTTP Session Belongs To](/api.html#operation-sessions-whoami-get): GET /sessions/whoami - Uses the HTTP Headers in the GET request to determine (e.g. by using checking the cookies) who is authenticated.
+- [Disable one of my sessions](/api.html#operation-sessions-id-delete): DELETE /sessions/{id} - Calling this endpoint invalidates the specified session. The current session cannot be revoked.
+- [Return Running Software Version.](/api.html#operation-version-get): GET /version - This endpoint returns the version of Ory Kratos.

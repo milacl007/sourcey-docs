@@ -1,0 +1,15 @@
+{
+  "receipt_dir": "/home/runner/work/sourcey-docs/sourcey-docs/receipts",
+  "signature_mode": "local-development",
+  "trees": [
+    {
+      "root_receipt_id": "sha256:fffd1c20c8ad34dd08649128c0875887f8daf931d382a4ae8d8de266c255ecd9",
+      "receipt_count": 1,
+      "parent_missing": null,
+      "valid": true,
+      "findings": []
+    }
+  ],
+  "unreadable_files": [],
+  "valid": true
+}

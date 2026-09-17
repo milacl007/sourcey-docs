@@ -1,0 +1,15 @@
+Prepared run
+  Skill:  /home/runner/work/sourcey-docs/sourcey-docs/skill
+  Runner: validate
+  Source: ./skill (explicit_path)
+  Receipts: ./receipts
+  Steps:  0 total, 0 conditional
+  Tools:  none
+  Boundaries: trusted_host_process
+  Managed agent: 0 act(s), off; caller resolves needs_agent
+  Inputs: none
+  Credential: none
+  Digest: sha256:7f6484d7dddc324040a5123ed8f99e51d479568a9883b0f14f99d2e0138e5f90
+  Full context: add --full-operator-context
+
+{"closure":{"closed_at":"2026-09-17T23:10:35.607Z","disposition":"closed","reason_code":"process_closed","summary":"cli-tool validate completed"},"next":null,"outcome":"completed","receipt_id":"sha256:fffd1c20c8ad34dd08649128c0875887f8daf931d382a4ae8d8de266c255ecd9","result":"{\n  \"spec_url\": \"https://raw.githubusercontent.com/ory/kratos/v26.2.0/spec/api.json\",\n  \"spec_title\": \"Ory Identities API\",\n  \"spec_sha256\": \"f258cd011bfd9fc6c7589e60db992245fa1bb00dfc731b20bee9924b83855cc7\",\n  \"operations\": 56,\n  \"schemas\": 155,\n  \"public_url\": \"https://milacl007.github.io/sourcey-docs/\"\n}\nVALIDATION_OK\n","run_id":"run_validate_756d4cd5946d17f3","runner":"validate","schema":"runx.skill_run.v1","skill_name":"sourcey-docs-validation","status":"sealed"}

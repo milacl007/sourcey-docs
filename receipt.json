@@ -1,0 +1,11 @@
+{
+  "schema": "runx.receipt_store_index.v1",
+  "generated_at": "1789686635612543526",
+  "entries": [
+    {
+      "receipt_id": "sha256:fffd1c20c8ad34dd08649128c0875887f8daf931d382a4ae8d8de266c255ecd9",
+      "file_name": "sha256-fffd1c20c8ad34dd08649128c0875887f8daf931d382a4ae8d8de266c255ecd9.json",
+      "created_at": "2026-09-17T23:10:35.607Z"
+    }
+  ]
+}
