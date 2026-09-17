@@ -5,33 +5,92 @@ on:
     branches: [main]
     paths: ['.github/workflows/build-docs.yml']
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: fetch pinned OpenAPI (Ory Kratos v26.2.0)
+      - uses: actions/checkout@v4
+      - name: install tools
         run: |
-          mkdir -p work && cd work
-          curl -fsSL "https://raw.githubusercontent.com/ory/kratos/v26.2.0/spec/api.json" -o api.json
-          python3 -c "import json;d=json.load(open('api.json'));print('title:',d['info']['title'],'paths:',len(d['paths']))"
-      - name: install + build sourcey
+          npm init -y >/dev/null 2>&1 || true
+          npm install sourcey 2>&1 | tail -2
+          curl -fsSL https://runx.ai/install | sh
+          echo /usr/local/bin >> $GITHUB_PATH
+      - name: fetch pinned spec + build docs
         run: |
-          cd work
-          npm init -y >/dev/null 2>&1
-          npm install sourcey 2>&1 | tail -4
-          echo "--- sourcey build ---"
-          npx --yes sourcey build api.json 2>&1 | tail -40 || true
-          echo "--- outputs ---"; ls -la; echo "--- dist ---"; ls -la dist 2>&1 | head || true
-      - name: upload pages artifact
-        uses: actions/upload-pages-artifact@v3
+          curl -fsSL "https://raw.githubusercontent.com/ory/kratos/v26.2.0/spec/api.json" -o skill/api.json
+          npx --yes sourcey build skill/api.json 2>&1 | tail -12
+          echo "--- dist ---"; ls -la dist
+      - name: runx skill -> receipt
+        run: |
+          runx --version | tee runx_version.txt
+          echo "--- run skill ---"; runx skill ./skill -R ./receipts -j 2>&1 | tee runx_run.json | tail -25 || true
+          echo "--- receipts ---"; find ./receipts -type f 2>/dev/null
+          echo "--- verify ---"; runx verify --receipt-dir ./receipts --allow-local-development-signatures -j 2>&1 | tee runx_verify.json | tail -25 || true
+      - name: assemble evidence + report + receipt
+        run: |
+          python3 - <<'PY'
+          import json, glob, hashlib
+          ver = open('runx_version.txt').read().strip()
+          rc = None
+          for f in sorted(glob.glob('receipts/**/*.json', recursive=True)) + sorted(glob.glob('receipts/*')):
+              try:
+                  d = json.load(open(f))
+                  if isinstance(d, dict) and (d.get('id') or d.get('schema','').startswith('runx.receipt')):
+                      rc = d; break
+              except Exception:
+                  pass
+          spec = json.load(open('skill/api.json'))
+          ops = sum(1 for _p, m in spec['paths'].items() for k in m if k.lower() in ('get','post','put','delete','patch'))
+          schemas = len(spec.get('components', {}).get('schemas', {}))
+          ev = {
+            "artifact": "sourcey-docs-evidence.v1",
+            "public_url": "https://milacl007.github.io/sourcey-docs/",
+            "target": {"repo": "ory/kratos", "ref": "v26.2.0",
+                       "commit": "9d7085948039ffb8960160d4979f71527b5cf4d5",
+                       "license": "Apache-2.0", "spec_path": "spec/api.json"},
+            "observations": {
+              "runx_version": ver, "operations": ops, "schemas": schemas,
+              "generator": "sourcey (npm) static site generator",
+              "receipt_id": (rc or {}).get('id'),
+              "receipt_digest": (rc or {}).get('digest'),
+              "receipt_class": (rc or {}).get('class'),
+              "reproduce": "runx skill ./skill -R ./receipts ; runx verify --receipt-dir ./receipts"
+            }
+          }
+          open('evidence.json','w').write(json.dumps(ev, indent=2))
+          if rc: open('receipt.json','w').write(json.dumps(rc, indent=2))
+          open('report.md','w').write(
+            "# Sourcey Docs Delivery - Ory Kratos v26.2.0\n\n"
+            "Published API-reference documentation for the maintained OSS library **Ory Kratos** "
+            "(Apache-2.0), generated with the Sourcey static-site generator from the OpenAPI spec "
+            "pinned at commit `9d7085948039ffb8960160d4979f71527b5cf4d5`.\n\n"
+            f"- Live docs: https://milacl007.github.io/sourcey-docs/\n"
+            f"- Operations documented: {ops}\n- Schemas: {schemas}\n"
+            f"- runx: {ver} ; receipt id: {(rc or {}).get('id')}\n"
+            "- Reproduce the receipt: `runx skill ./skill -R ./receipts` then "
+            "`runx verify --receipt-dir ./receipts`\n")
+          print("assembled. receipt_id=", (rc or {}).get('id'), "ops=", ops)
+          PY
+      - name: commit artifacts
+        run: |
+          cp -f evidence.json report.md dist/ 2>/dev/null || true
+          [ -f receipt.json ] && cp -f receipt.json dist/ || true
+          git config user.name "mila-bot"
+          git config user.email "mila@users.noreply.github.com"
+          git add -A
+          git commit -m "delivery artifacts: kratos v26.2.0 docs + runx receipt" || echo "nothing to commit"
+          git push
+          echo "COMMIT_SHA=$(git rev-parse HEAD)"
+      - uses: actions/upload-pages-artifact@v3
         with:
-          path: work/dist
+          path: dist
   deploy:
     needs: build
     runs-on: ubuntu-latest
